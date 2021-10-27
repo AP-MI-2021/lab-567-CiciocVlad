@@ -1,4 +1,5 @@
 from server.validator import Validator
+from server.service_exception import ServiceException
 
 
 class Server:
@@ -16,9 +17,12 @@ class Server:
         return self.__reservation_repo.read_one(reservation_id)
 
     def handle_update(self, new_reservation):
-        reservation = self.__reservation_repo.read_one(new_reservation.id)
-        Validator.validate_update(reservation, new_reservation)
-        self.__reservation_repo.update(reservation)
+        try:
+            reservation = self.__reservation_repo.read_one(new_reservation.id)
+        except KeyError as e:
+            raise ServiceException(e)
+        new_reservation = Validator.validate_update(reservation, new_reservation)
+        self.__reservation_repo.update(new_reservation)
 
     def handle_delete(self, reservation_id):
         self.__reservation_repo.delete(reservation_id)

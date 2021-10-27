@@ -28,7 +28,7 @@ class Console:
                 except ServiceException as e:
                     print(e)
             elif option == '2':
-                for i in self.__reservation_service.handle_get_all().values():
+                for i in self.__reservation_service.handle_get_all():
                     print(i)
             elif option == '3':
                 try:

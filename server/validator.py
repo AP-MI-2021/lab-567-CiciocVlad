@@ -23,3 +23,4 @@ class Validator:
             raise ServiceException('invalid reservation class, could not update')
         if new_reservation.check_in not in ['yes', 'no']:
             raise ServiceException('invalid check in, could not update')
+        return new_reservation
