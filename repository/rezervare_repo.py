@@ -17,13 +17,19 @@ class ReservationRepo:
                 return i
         raise KeyError('id not found')
 
+    def get_by_name(self, name):
+        for i in self.__repo:
+            if i.name == name:
+                return i
+        return None
+
     def update(self, new_reservation):
         for index, i in enumerate(self.__repo):
             if i.id == int(new_reservation.id):
-                self.__repo.pop(index)
-                self.__repo.append(new_reservation)
+                self.__repo[index] = new_reservation
 
     def delete(self, reservation_id):
         for index, i in enumerate(self.__repo):
-            if i.id == int(reservation_id.id):
-                self.__repo.pop(index)
+            if i.id == int(reservation_id):
+                return self.__repo.pop(index)
+        return None

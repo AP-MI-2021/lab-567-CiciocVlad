@@ -13,18 +13,24 @@ class Console:
         print('3. get one')
         print('4. update reservation')
         print('5. delete reservation')
-        print('6. exit')
+        print('6. get every reservation upper class for name')
+        print('7. get all check in cheaper')
+        print('8. get highest price for every class')
+        print('9. get reservations by price')
+        print('10. show price for every name')
+        print('11. undo')
+        print('x. exit')
         return input('your option: ')
 
     def handle_menu(self):
-        while (option := self.menu()) != '6':
+        while (option := self.menu()) != 'x':
             if option == '1':
                 name = input('name: ')
                 reservation_class = input('class: ')
                 price = input('price: ')
                 check_in = input('check in: ')
                 try:
-                    self.__reservation_service.handle_create(Reservation(name, reservation_class, price, check_in))
+                    self.__reservation_service.handle_create(name, reservation_class, price, check_in)
                 except ServiceException as e:
                     print(e)
             elif option == '2':
@@ -38,7 +44,7 @@ class Console:
             elif option == '4':
                 reservation_id = input('id: ')
                 name = input('name: ')
-                reservation_class = input('reservation_class: ')
+                reservation_class = input('class: ')
                 price = input('price: ')
                 check_in = input('check in: ')
                 reservation = Reservation(name, reservation_class, price, check_in)
@@ -49,6 +55,33 @@ class Console:
                     print(e)
             elif option == '5':
                 reservation_id = input('id: ')
-                self.__reservation_service.handle_delete(reservation_id)
+                try:
+                    self.__reservation_service.handle_delete(reservation_id)
+                except ServiceException as e:
+                    print(e)
+            elif option == '6':
+                name = input('name: ')
+                try:
+                    self.__reservation_service.update_upper_class(name)
+                except ServiceException as e:
+                    print(e)
+            elif option == '7':
+                percent = int(input('percent: '))
+                self.__reservation_service.get_cheaper(percent)
+            elif option == '8':
+                [economy, economy_plus, business] = self.__reservation_service.get_highest_for_every_class()
+                if economy > 0:
+                    print(f'highest price for economy class: {economy}')
+                if economy_plus > 0:
+                    print(f'highest price for economy plus class: {economy_plus}')
+                if business > 0:
+                    print(f'highest price for business class: {business}')
+            elif option == '9':
+                for i in self.__reservation_service.get_reservations_by_price():
+                    print(i)
+            elif option == '10':
+                prices = self.__reservation_service.get_price_for_every_name().keys()
+                for i in prices:
+                    print(f'name: {i}\nprice: {prices[i]}\n')
             else:
                 print('invalid option')
