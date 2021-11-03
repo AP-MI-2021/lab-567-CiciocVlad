@@ -49,3 +49,7 @@ class Reservation:
     def __str__(self):
         return f'\nid: {self.id}\nname: {self.name}\nclass: {self.reservation_class}\n' \
                f'price: {self.price}\ncheck in: {self.check_in}\n'
+
+    def __eq__(self, other):
+        return self.id == other.id and self.name == other.name and self.reservation_class == other.reservation_class \
+               and self.price == other.price and self.check_in == other.check_in
