@@ -19,6 +19,7 @@ class Console:
         print('9. get reservations by price')
         print('10. show price for every name')
         print('11. undo')
+        print('12. redo')
         print('x. exit')
         return input('your option: ')
 
@@ -66,8 +67,11 @@ class Console:
                 except ServiceException as e:
                     print(e)
             elif option == '7':
-                percent = int(input('percent: '))
-                self.__reservation_service.get_cheaper(percent)
+                try:
+                    percent = int(input('percent: '))
+                    self.__reservation_service.get_cheaper(percent)
+                except ValueError:
+                    print('percent must be an int value')
             elif option == '8':
                 [economy, economy_plus, business] = self.__reservation_service.get_highest_for_every_class()
                 if economy > 0:
@@ -80,8 +84,18 @@ class Console:
                 for i in self.__reservation_service.get_reservations_by_price():
                     print(i)
             elif option == '10':
-                prices = self.__reservation_service.get_price_for_every_name().keys()
-                for i in prices:
+                prices = self.__reservation_service.get_price_for_every_name()
+                for i in prices.keys():
                     print(f'name: {i}\nprice: {prices[i]}\n')
+            elif option == '11':
+                try:
+                    self.__reservation_service.undo()
+                except IndexError:
+                    print('no undo left')
+            elif option == '12':
+                try:
+                    self.__reservation_service.redo()
+                except IndexError:
+                    print('no redo left')
             else:
                 print('invalid option')
