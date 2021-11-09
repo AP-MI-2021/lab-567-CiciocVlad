@@ -8,8 +8,9 @@ class ReservationRepo:
         # with the generated id to the repo
         # :param reservation: object of type Reservation
         # :return: void
-        reservation.id = self.__id
-        self.__id += 1
+        if reservation.id is None:
+            reservation.id = self.__id
+            self.__id += 1
         self.__repo.append(reservation)
 
     def read(self):
@@ -27,10 +28,7 @@ class ReservationRepo:
     def get_by_name(self, name):
         # :param name: string
         # :return: the reservation on the given name as a parameter
-        for i in self.__repo:
-            if i.name == name:
-                return i
-        return None
+        return list(filter(lambda x: x.name == name, self.__repo))
 
     def update(self, new_reservation):
         # updates the reservation that has the same id as the reservation
@@ -38,8 +36,14 @@ class ReservationRepo:
         # :param new_reservation: Reservation
         # :return: void
         for index, i in enumerate(self.__repo):
-            if i.id == int(new_reservation.id):
+            if i.id == new_reservation.id:
                 self.__repo[index] = new_reservation
+
+    def update_all(self, reservations):
+        self.__repo = reservations
+
+    def update_all_names(self, reservations):
+        self.__repo = list(filter(lambda x: x.name != reservations[0].name, self.__repo)) + reservations
 
     def delete(self, reservation_id):
         # deletes the reservation with the given id

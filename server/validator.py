@@ -8,7 +8,7 @@ class Validator:
             float(price)
         except ValueError:
             raise ServiceException('price must be a float')
-        if reservation_class not in ['economy', 'economy plus', 'business']:
+        if reservation_class not in ['economy', 'economy_plus', 'business']:
             raise ServiceException('invalid reservation class, could not create')
         if check_in not in ['yes', 'no']:
             raise ServiceException('invalid check in, could not create')
@@ -23,7 +23,7 @@ class Validator:
             new_reservation.price = float(reservation.price)
         if new_reservation.check_in == '':
             new_reservation.check_in = reservation.check_in
-        if new_reservation.reservation_class not in ['economy', 'economy plus', 'business']:
+        if new_reservation.reservation_class not in ['economy', 'economy_plus', 'business']:
             raise ServiceException('invalid reservation class, could not update')
         if new_reservation.check_in not in ['yes', 'no']:
             raise ServiceException('invalid check in, could not update')

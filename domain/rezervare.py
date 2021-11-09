@@ -1,6 +1,6 @@
 class Reservation:
     def __init__(self, name, reservation_class, price, check_in):
-        self.__id = 0
+        self.__id = None
         self.__name = name
         self.__reservation_class = reservation_class
         self.__price = price
