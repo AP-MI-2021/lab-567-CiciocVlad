@@ -91,6 +91,74 @@ def test_redo(server):
     assert server.handle_get_all() == [reservation_result]
 
 
+def test_general(server):
+    assert server.handle_get_all() == []
+    reservation1 = Reservation('Jane', 'economy', float('50'), 'yes')
+    reservation1.id = 2
+    server.handle_create('Jane', 'economy', '50', 'yes')
+    assert len(server.handle_get_all()) == 1
+    reservation2 = Reservation('John', 'business', float('100'), 'yes')
+    reservation2.id = 3
+    server.handle_create('John', 'business', '100', 'yes')
+    assert len(server.handle_get_all()) == 2
+    reservation3 = Reservation('Jane', 'economy_plus', float('90'), 'no')
+    reservation3.id = 4
+    server.handle_create('Jane', 'economy_plus', '90', 'no')
+    assert len(server.handle_get_all()) == 3
+    server.undo()
+    assert server.handle_get_all() == [reservation1, reservation2]
+    server.undo()
+    server.undo()
+    try:
+        server.undo()
+        assert False
+    except IndexError:
+        assert True
+    assert server.handle_get_all() == []
+    server.handle_create('Jane', 'economy', '50', 'no')
+    server.handle_create('John', 'business', '100', 'yes')
+    server.handle_create('Jane', 'economy_plus', '90', 'yes')
+    try:
+        server.redo()
+        assert False
+    except IndexError:
+        assert True
+    assert len(server.handle_get_all()) == 3
+    server.undo()
+    server.undo()
+    assert len(server.handle_get_all()) == 1
+    server.redo()
+    assert len(server.handle_get_all()) == 2
+    server.redo()
+    assert len(server.handle_get_all()) == 3
+    server.undo()
+    server.undo()
+    assert len(server.handle_get_all()) == 1
+    server.redo()
+    server.redo()
+    assert len(server.handle_get_all()) == 3
+    server.undo()
+    server.undo()
+    assert len(server.handle_get_all()) == 1
+    server.handle_create('Marcel', 'business', '150', 'yes')
+    try:
+        server.redo()
+        assert False
+    except IndexError:
+        assert True
+    server.undo()
+    server.undo()
+    assert server.handle_get_all() == []
+    server.redo()
+    server.redo()
+    assert len(server.handle_get_all()) == 2
+    try:
+        server.redo()
+        assert False
+    except IndexError:
+        assert True
+
+
 def run_tests():
     repo = ReservationRepo()
     server = Server(repo)
@@ -106,3 +174,5 @@ def run_tests():
     test_undo(server)
     test_redo(server)
     test_handle_delete(server)
+    server = Server(repo)
+    test_general(server)
